@@ -3,7 +3,7 @@ import { appRouter } from "./router.config";
 
 const Router = () => {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={process.env.PUBLIC_URL}>
       <Switch>
         {appRouter.map((props) => {
           return <Route key={props.path} {...props} />;
