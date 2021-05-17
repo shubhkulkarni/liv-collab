@@ -6,4 +6,5 @@ export const classes = {
   focus:outline-none ring-2 ring-purple-500 hover:bg-purple-100  text-purple-700 rounded-xl md:px-10 
   md:py-1 px-4 py-1 pb-2 md:pb-3 font-semibold text-2xl  shadow-lg`,
   joinDesc: `text-gray-900 font-semibold mt-8 text-2xl text-center`,
+  joinInput: `bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500`,
 };

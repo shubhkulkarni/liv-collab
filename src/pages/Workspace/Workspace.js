@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { classes } from "./classes";
 import logo from "../../assets/logo.svg";
 import { useParams } from "react-router";
@@ -8,11 +8,13 @@ import Editor, { useMonaco } from "@monaco-editor/react";
 import Collapse from "./../../components/Collapse/Collapse";
 import Switcher from "./../../components/Switch/Switch";
 import List from "./../../components/Listbox/Listbox";
+import { SocketContext } from "./../../socket/socket";
+
 function Workspace() {
   const { id } = useParams();
   const [enabled, setEnabled] = useState(false);
   const [codeValue, setCodeValue] = useState(
-    `// Write or paste your code here \r\nlet a = 'Shubham'\r\nfunction abc() {\r\n    \r\n}`
+    `// Write or paste your code here`
   );
   const languages = [
     { name: "javascript" },
@@ -22,6 +24,21 @@ function Workspace() {
     { name: "typescript" },
   ];
   const [selected, setSelected] = useState(languages[0]);
+
+  const socket = useContext(SocketContext);
+
+  useEffect(() => {
+    socket.emit("JOIN_ROOM", id);
+    // socket.emit("MESSAGE", codeValue);
+    socket.on("JOIN_ROOM", () => {
+      socket.emit("MESSAGE", codeValue);
+    });
+    socket.on("MESSAGE", (msg) => {
+      console.log("msg from server" + msg);
+      setCodeValue(msg);
+    });
+    return () => socket.disconnect();
+  }, [id]);
 
   return (
     <div className={classes.home}>
@@ -61,7 +78,7 @@ function Workspace() {
           onChange={(val) => {
             setCodeValue(val);
 
-            console.log(JSON.stringify({ text: val }));
+            socket.emit("MESSAGE", val);
           }}
         />
       </div>

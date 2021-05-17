@@ -8,5 +8,5 @@ export const classes = {
   joinDesc: `text-gray-900 font-semibold mt-8 text-2xl text-center`,
   editor: `w-full h-full md:px-8 px-4 mt-8 flex justify-center `,
   collapse: `w-auto mb-6 md:w-1/4 w-full`,
-  infoCtr: `flex flex-col lg:flex-row mt-8 justify-start md:px-8 px-4  items-center md:items-baseline w-full z-40 `,
+  infoCtr: `flex flex-col md:flex-row mt-8 justify-start md:px-8 px-4  items-center md:items-baseline w-full z-40 `,
 };
