@@ -1,7 +1,7 @@
 import { Fragment, useState } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 
-export default function List({ list = {}, selected, setSelected }) {
+export default function List({ list = [], selected, setSelected }) {
   return (
     <Listbox value={selected} onChange={setSelected}>
       <div className="relative mt-1 p-2 mx-2 bg-white rounded-2xl">

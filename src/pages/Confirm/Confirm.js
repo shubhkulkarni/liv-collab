@@ -11,13 +11,15 @@ function Confirm() {
   const { path } = useParams();
   const [isModalOpen, setModalOpen] = useState(false);
   const [roomId, setRoomId] = useState(``);
+  const [joinId, setJoinId] = useState(``);
   const history = useHistory();
   const socket = useContext(SocketContext);
   const createRoomButtonHandler = () => {
     history.replace(`/workspace/${roomId}`);
   };
   const joinRoomButtonHandler = () => {
-    history.replace(`/workspace/${roomId}`);
+    if (joinId.length < 6) return;
+    history.replace(`/workspace/${joinId}`);
   };
   const createModalProps = {
     isOpen: isModalOpen,
@@ -27,13 +29,18 @@ function Confirm() {
     mainContent: `Your room is created : ${roomId}`,
     buttonHandler: createRoomButtonHandler,
   };
+
+  const onJoinIdChange = (e) => setJoinId(e.target.value);
   const JoinModalContent = () => {
     return (
       <input
+        autofocus
         className={classes.joinInput}
         id="inline-full-name"
         type="text"
-        value="abd-hjuy-pqr"
+        placeholder="ex. abd-hjuy-pqr"
+        value={joinId}
+        onChange={onJoinIdChange}
       />
     );
   };
@@ -61,7 +68,7 @@ function Confirm() {
 
       <div className={classes.joinCtr}>
         <button className={classes.joinBtn} onClick={readyBtnHandler}>
-          {true ? <Spinner /> : "Are you ready ?"}
+          {path === "join" ? "Join with room id" : "Create new room"}
         </button>
         <div className={classes.joinDesc}>
           {path === "join"

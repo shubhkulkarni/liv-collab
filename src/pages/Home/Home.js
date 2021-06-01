@@ -68,7 +68,15 @@ function Home() {
           <div className={classes.title}>
             Available on mobiles and desktops as PWA
           </div>
-          <button className={classes.btn + classes.footerBtn}>
+          <button
+            onClick={() =>
+              window.open(
+                "https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps",
+                "_blank"
+              )
+            }
+            className={classes.btn + classes.footerBtn}
+          >
             Learn more
           </button>
         </div>

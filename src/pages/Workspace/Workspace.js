@@ -6,9 +6,11 @@ import Modal from "./../../components/Dialog/Dialog";
 import { Link } from "react-router-dom";
 import Editor, { useMonaco } from "@monaco-editor/react";
 import Collapse from "./../../components/Collapse/Collapse";
-import Switcher from "./../../components/Switch/Switch";
+
 import List from "./../../components/Listbox/Listbox";
 import { SocketContext } from "./../../socket/socket";
+import SplitPane from "react-split-pane";
+import ResultPane from "./../../components/ResultPane/ResultPane";
 
 function Workspace() {
   const { id } = useParams();
@@ -17,14 +19,19 @@ function Workspace() {
     `// Write or paste your code here`
   );
   const languages = [
-    { name: "javascript" },
-    { name: "python" },
-    { name: "html" },
-    { name: "css" },
-    { name: "typescript" },
+    { name: "Javascript", key: "javascript" },
+    { name: "Python", key: "python" },
+    { name: "HTML", key: "html" },
+    { name: "CSS", key: "css" },
+    { name: "Typescript", key: "typescript" },
+  ];
+
+  const themes = [
+    { name: "Light", key: "light" },
+    { name: "Dark", key: "vs-dark" },
   ];
   const [selected, setSelected] = useState(languages[0]);
-
+  const [theme, setTheme] = useState(themes[0]);
   const socket = useContext(SocketContext);
 
   useEffect(() => {
@@ -46,6 +53,7 @@ function Workspace() {
         <Link to="/home">
           <img src={logo} alt="logo" className={classes.logoImg} />
         </Link>
+        <span className="text-indigo-500 font-semibold">( {id} )</span>
       </div>
       <div className={classes.infoCtr}>
         <div className={classes.collapse}>
@@ -55,32 +63,56 @@ function Workspace() {
           />
         </div>
 
-        <div className="md:ml-8 md:w-1/4 w-full">
+        <div className="md:ml-8 md:w-1/4 w-full mb-6">
           <List
             list={languages}
             selected={selected}
             setSelected={setSelected}
           />
         </div>
-        <div className="md:mt-0 mt-8 md:self-auto self-start">
-          <Switcher enabled={enabled} setEnabled={setEnabled} label={""} />
+        <div className="md:ml-4 md:w-1/4 w-full">
+          <List list={themes} selected={theme} setSelected={setTheme} />
         </div>
       </div>
+      <div class="w-screen hidden md:block">
+        <SplitPane split="vertical" minSize="50%" allowResize>
+          <div className={classes.editor}>
+            <Editor
+              height="100vh"
+              defaultValue="// Write or paste your code here "
+              defaultLanguage="javascript"
+              language={selected.key}
+              theme={enabled ? "vs-dark" : "light"}
+              value={codeValue}
+              onChange={(val) => {
+                setCodeValue(val);
 
-      <div className={classes.editor}>
-        <Editor
-          height="100vh"
-          defaultValue="// Write or paste your code here "
-          defaultLanguage="javascript"
-          language={selected.name}
-          theme={enabled ? "vs-dark" : "light"}
-          value={codeValue}
-          onChange={(val) => {
-            setCodeValue(val);
+                socket.emit("MESSAGE", val);
+              }}
+            />
+          </div>
 
-            socket.emit("MESSAGE", val);
-          }}
-        />
+          <ResultPane code={codeValue} lang={selected.key} />
+        </SplitPane>
+      </div>
+      <div class="w-screen md:hidden">
+        <div className={classes.editor}>
+          <Editor
+            height="100vh"
+            defaultValue="// Write or paste your code here "
+            defaultLanguage="javascript"
+            language={selected.name}
+            theme={theme.key}
+            value={codeValue}
+            onChange={(val) => {
+              setCodeValue(val);
+
+              socket.emit("MESSAGE", val);
+            }}
+          />
+        </div>
+
+        <ResultPane code={codeValue} lang={selected.key} />
       </div>
     </div>
   );
